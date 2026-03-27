@@ -1,4 +1,8 @@
 node_modules/
+.env
+dist/
 
 # personal
 NOTES.md
+DOCKER.md
+STRUCTURE.md
