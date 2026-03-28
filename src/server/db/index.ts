@@ -1,10 +1,10 @@
-import { env } from "../config/env";
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { config } from "../config/env";
 
 
 const pool = new Pool({
-  connectionString: env.DATABASE_URL,
+  connectionString: config.db.dbURL,
   //Creates a connection pool (A managed set of reusable database connections)
   //Handles multiple concurrent queries efficiently
   //When your app runs a query:
