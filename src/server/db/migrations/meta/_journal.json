@@ -8,6 +8,13 @@
       "when": 1774666257840,
       "tag": "0000_sudden_prism",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774758199228,
+      "tag": "0001_first_carlie_cooper",
+      "breakpoints": true
     }
   ]
 }

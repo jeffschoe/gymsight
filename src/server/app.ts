@@ -1,12 +1,16 @@
 import express from "express";
+import { registerRoutes } from "./routes/index.js";
 
-// This is the file that actually runs the app.
-
+// build and run the app
 export const app = express();
 
 
-// build app
+
+
+
+app.use(express.json()); // Built-in JSON body parsing middleware
 
 // set middleware  with app.use
 
 // set routes like app.get("/health, (req, res)")
+registerRoutes(app);

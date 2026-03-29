@@ -5,6 +5,7 @@ import { pgTable, timestamp, uuid, text, pgEnum } from "drizzle-orm/pg-core";
 export const roleEnum = pgEnum("role", [
   "public",
   "technician",
+  "manager",
   "admin",
 ])
 export type Role = typeof roleEnum.enumValues[number];
@@ -26,3 +27,6 @@ export const users = pgTable("users", {
     .defaultNow()
     .$onUpdate(() => new Date()),
 })
+//future: tie to Location and WOs
+export type NewUser = typeof users.$inferInsert;
+export type ExistingUser = typeof users.$inferSelect;
