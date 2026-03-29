@@ -1,6 +1,6 @@
 // src/server/db/test.ts
-import { db } from "./index";
-import { users } from "./schema/users";
+import { db } from "./index.js";
+import { users } from "./schema/users.js";
 
 async function main() {
   const result = await db.insert(users).values({

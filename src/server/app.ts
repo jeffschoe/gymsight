@@ -1,4 +1,8 @@
+import express from "express";
 
+// This is the file that actually runs the app.
+
+export const app = express();
 
 
 // build app

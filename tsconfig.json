@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    //"baseUrl": ".", deprecated
     "target": "esnext",
-    "module": "esnext",
+    "module": "nodenext",
     "rootDir": "./src",
     "outDir": "./dist",
     "strict": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "skipLibCheck": true
   },
