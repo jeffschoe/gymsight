@@ -1,4 +1,4 @@
-// entrypoint (listen)
+// entrypoint (listen) ONLY
 
 import { app } from "./app.js";
 import { config } from "./config/env.js";
@@ -8,6 +8,6 @@ import { config } from "./config/env.js";
 // Starts accepting HTTP requests
 // Routes them through your Express app
 
-app.listen(config.db.dbURL, () => {
+app.listen(config.api.port, () => {
   console.log(`Server is running at http://localhost:${config.api.port}`);
 })
