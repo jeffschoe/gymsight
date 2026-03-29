@@ -11,10 +11,10 @@ async function main() {
   console.log("Inserted:", result);
 
   const result2 = await db.insert(users).values({
-    email: "boobies@example.com",
-    passwordHash: "test123",
-    firstName: "Jeff",
-    lastName: "Schoenberger",
+    email: "F4rceBeWithMe@xwing.com",
+    passwordHash: "seeul8tervader",
+    firstName: "Luke",
+    lastName: "Skywalker",
     role: "admin",
   });
 
