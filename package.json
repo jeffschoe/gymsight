@@ -16,6 +16,7 @@
     "migrate": "drizzle-kit migrate"
   },
   "dependencies": {
+    "argon2": "^0.44.0",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
