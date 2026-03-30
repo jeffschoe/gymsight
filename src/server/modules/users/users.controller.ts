@@ -26,12 +26,12 @@ export async function resetUsers(
     if (config.api.platform !== "dev") {
       //not allowed to preform hard users table reset
       console.log(`platform = ${config.api.platform}`)
-      res.status(403).send("Forbidden");
-      
+      return res.status(403).send("Forbidden");
     }
+    //can perform reset
     const user = await userService.resetUsers();
-
-    res.status(201).json(user);
+    res.status(200).json(user);
+    
     
   } catch (err) {
     next(err); //lets Express error middleware handle failures
