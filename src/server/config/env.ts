@@ -19,6 +19,7 @@ type Config = {
 
 type APIConfig = {
   port: number;
+  platform: string;
 }
 
 
@@ -60,6 +61,7 @@ if (Number.isNaN(port)) {
 export const config: Config = {
   api: {
     port,
+    platform: envOrThrow("PLATFORM"),
   },
   db: {
     dbURL: envOrThrow("DATABASE_URL"),
