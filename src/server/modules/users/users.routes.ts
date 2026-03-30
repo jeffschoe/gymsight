@@ -7,7 +7,8 @@ export function registerUserRoutes(app: Express) {
   app.post('/api/users', userController.createUser);
   
 
-  //admin
+
+  // ⚠️ DEV ONLY: wipes users table and other cascade-delete tables
   app.post('/admin/reset', userController.resetUsers);
 
 }
