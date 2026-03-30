@@ -1,4 +1,4 @@
-// src/server/db/test.ts
+// FOR TESTING INSERTS ONLY, DOES NOT VALIDATE ENDPOINT
 import { db } from "./index.js";
 import { users } from "./schema/users.js";
 
@@ -11,7 +11,7 @@ async function main() {
   console.log("Inserted:", result);
 
   const result2 = await db.insert(users).values({
-    email: "F4rceBeWithMe@xwing.com",
+    email: "F0rceBeWithMe@xwing.com",
     passwordHash: "seeul8tervader",
     firstName: "Luke",
     lastName: "Skywalker",
@@ -22,3 +22,6 @@ async function main() {
 }
 
 main().catch(console.error);
+
+//run the test with
+//node ./dist/server/db/test.js
