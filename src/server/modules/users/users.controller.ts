@@ -17,6 +17,7 @@ export async function createUser(
   }
 };
 
+// ⚠️ DEV ONLY: wipes users table and other cascade-delete tables
 export async function resetUsers(
   _req: Request, 
   res: Response, 

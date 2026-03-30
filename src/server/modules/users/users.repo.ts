@@ -14,6 +14,7 @@ export async function createUser(user: NewUser) {
   return result;
 }
 
+// ⚠️ DEV ONLY: wipes users table and other cascade-delete tables
 export async function resetUsers() {
   await db.delete(users)
   //return { success: true } //leaving out for now

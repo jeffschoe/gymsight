@@ -20,7 +20,7 @@ export async function createUser(input: CreateUserInput) {
 }
 
 
-
+// ⚠️ DEV ONLY: wipes users table and other cascade-delete tables
 export async function resetUsers() {
   return userRepo.resetUsers();
 }
