@@ -5,5 +5,9 @@ import * as userController from './users.controller.js'
 
 export function registerUserRoutes(app: Express) {
   app.post('/api/users', userController.createUser);
-  // add future routes here
+  
+
+  //admin
+  app.post('/admin/reset', userController.resetUsers);
+
 }

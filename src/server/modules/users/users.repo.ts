@@ -14,6 +14,10 @@ export async function createUser(user: NewUser) {
   return result;
 }
 
+export async function resetUsers() {
+  const result = await db.delete(users)
+  return result;
+}
 
 
 

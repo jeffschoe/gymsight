@@ -1,5 +1,6 @@
 import * as userService from './users.services.js';
 import { Request, Response, NextFunction } from 'express';
+import { config } from "../../config/env.js";
 
 export async function createUser(
   req: Request, 
@@ -11,6 +12,27 @@ export async function createUser(
     console.log('REQ BODY:', req.body);
 
     res.status(201).json(user);
+  } catch (err) {
+    next(err); //lets Express error middleware handle failures
+  }
+};
+
+export async function resetUsers(
+  _req: Request, 
+  res: Response, 
+  next: NextFunction
+) {
+  try {
+    if (config.api.platform !== "dev") {
+      //not allowed to preform hard users table reset
+      console.log(`platform = ${config.api.platform}`)
+      res.status(403).send("Forbidden");
+      
+    }
+    const user = await userService.resetUsers();
+
+    res.status(201).json(user);
+    
   } catch (err) {
     next(err); //lets Express error middleware handle failures
   }

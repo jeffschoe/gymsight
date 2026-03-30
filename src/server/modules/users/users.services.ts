@@ -19,3 +19,9 @@ export async function createUser(input: CreateUserInput) {
   });
 }
 
+
+
+export async function resetUsers() {
+  return userRepo.resetUsers();
+}
+
