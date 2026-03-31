@@ -1,6 +1,7 @@
 import * as userService from './users.services.js';
 import { Request, Response, NextFunction } from 'express';
 import { config } from "../../config/env.js";
+import { DeleteUserByIdParams } from './users.types.js';
 
 export async function createUser(
   req: Request, 
@@ -13,6 +14,25 @@ export async function createUser(
 
     res.status(201).json(user);
   } catch (err) {
+    next(err); //lets Express error middleware handle failures
+  }
+};
+
+export async function deleteUserById(
+  req: Request<DeleteUserByIdParams>, 
+  res: Response, 
+  next: NextFunction
+) {
+  try {
+    const user = await userService.deleteUserById(req.params.id);
+    console.log('REQ PARAMS:', req.params);
+
+    res.status(204).json(user);
+  } catch (err: any) {
+    if (err.message === 'User not found') {
+      return res.status(404).json({ message: err.message });
+    }
+
     next(err); //lets Express error middleware handle failures
   }
 };
@@ -31,7 +51,7 @@ export async function resetUsers(
     }
     //can perform reset
     const user = await userService.resetUsers();
-    res.status(200).json(user);
+    res.status(204).json(user);
     
     
   } catch (err) {
