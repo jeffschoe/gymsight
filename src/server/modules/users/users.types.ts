@@ -10,3 +10,7 @@ export type CreateUserInput = {
   lastName?: string;
   role?: Role;
 };
+
+export type DeleteUserByIdParams = {
+  id: string;
+};

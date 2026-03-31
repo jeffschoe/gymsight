@@ -11,12 +11,21 @@ export async function createUser(input: CreateUserInput) {
 
   const passwordHash = await hashPassword(password);
 
-  //hashing still not implemented
   return userRepo.createUser({
     ...rest,
     passwordHash,
     role: 'public' // prevent endpoint from passing whatever role, will need prtoected endpoint later
   });
+}
+
+export async function deleteUserById(id: string) {
+  //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
+  if (!id) throw new Error('ID required');
+  
+  const user = await userRepo.deleteUserById(id);
+  if (!user) throw new Error('User not found');
+  
+  return user;
 }
 
 
