@@ -3,7 +3,7 @@ import * as userRepo from './users.repo.js';
 import { CreateUserInput } from "./users.types.js";
 
 export async function createUser(input: CreateUserInput) {
-  console.log('SERVICE INPUT:', input);
+  //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
   if (!input.email) throw new Error('Email required');
   if (!input.password) throw new Error('Password required');
   
