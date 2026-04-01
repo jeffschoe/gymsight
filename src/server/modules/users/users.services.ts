@@ -4,7 +4,6 @@ import { BadRequestError, ConflictError, NotFoundError } from "../../errors/erro
 import { hashPassword } from "../../utils/hash.js";
 import * as userRepo from './users.repo.js';
 import { CreateUserInput, UserResponse } from "./users.types.js";
-import pg from "pg";
 
 
 function toUserResponse(user: ExistingUser): UserResponse {
@@ -31,21 +30,31 @@ export async function createUser(input: CreateUserInput) {
     return toUserResponse(user); //removes hashedPassword
 
   } catch (err: unknown) {
-  if (
-    typeof err === 'object' &&
-    err !== null &&
-    'cause' in err
-  ) {
-    const cause = (err as any).cause; //drizzle specific, wraps pg error code in cause {}
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      'cause' in err
+    ) {
+      const cause = (err as any).cause; //drizzle specific, wraps pg error code in cause {}
 
-    if (cause?.code === '23505') { //pg error code for duplicate key
-      throw new ConflictError('Email already exists');
+      if (cause?.code === '23505') { //pg error code for duplicate key
+        throw new ConflictError('Email already exists');
+      }
     }
-  }
 
-  throw err;
+    throw err;
+  }
 }
 
+export async function getUsers() {
+  try {
+    const users = await userRepo.getUsers();
+
+    //return users;
+    return users.map((user) => toUserResponse(user)); //maps each to remove hashed password
+  } catch (err) {
+    throw err;
+  }
 }
 
 export async function deleteUserById(id: string) {

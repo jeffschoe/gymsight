@@ -19,6 +19,20 @@ export async function createUser(
   }
 };
 
+export async function getUsers(
+  req: Request, 
+  res: Response, 
+  next: NextFunction
+) {
+  try {
+    const users = await userService.getUsers();
+
+    res.status(201).json(users);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function deleteUserById(
   req: Request<DeleteUserByIdParams>, 
   res: Response, 

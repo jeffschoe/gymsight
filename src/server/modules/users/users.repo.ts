@@ -14,6 +14,13 @@ export async function createUser(user: NewUser) {
   return result;
 }
 
+export async function getUsers() {
+  const results = await db
+  .select()
+  .from(users)
+  return results;
+}
+
 export async function deleteUserById(id: string) {
   const [deleted] = await db
     .delete(users)
