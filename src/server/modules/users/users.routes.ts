@@ -5,10 +5,11 @@ import * as userController from './users.controller.js'
 
 
 export function registerUserRoutes(app: Express) {
-  
-  //users
+
   app.post('/api/users', userController.createUser);
   app.get('/api/users', userController.getUsers);
+  //app.get('/api/users/:id', userController.getUser);
+  //app.put('/api/users/:id, userController.updateUser);
   app.delete('/api/users/:id', userController.deleteUserById);
 
 
