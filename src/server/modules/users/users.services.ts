@@ -1,36 +1,66 @@
+//users.services.ts
+import { ExistingUser } from "../../db/schema/users.js";
+import { BadRequestError, ConflictError, NotFoundError } from "../../errors/errors.js";
 import { hashPassword } from "../../utils/hash.js";
 import * as userRepo from './users.repo.js';
-import { CreateUserInput } from "./users.types.js";
+import { CreateUserInput, UserResponse } from "./users.types.js";
+import pg from "pg";
+
+
+function toUserResponse(user: ExistingUser): UserResponse {
+  const { passwordHash, ...rest } = user;
+  return rest;
+} //could evnetually move to a users.mapper.ts if I have many more
 
 export async function createUser(input: CreateUserInput) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
-  if (!input.email) throw new Error('Email required');
-  if (!input.password) throw new Error('Password required');
+  if (!input.email) throw new BadRequestError('Email required');
+  if (!input.password) throw new BadRequestError('Password required');
   
   const { password, role, ...rest } = input;
 
   const passwordHash = await hashPassword(password);
 
-  return userRepo.createUser({
-    ...rest,
-    passwordHash,
-    role: 'public' // prevent endpoint from passing whatever role, will need prtoected endpoint later
-  });
+  try {
+    const user = await userRepo.createUser({
+      ...rest,
+      passwordHash,
+      role: 'public' // prevent endpoint from passing whatever role, will need prtoected endpoint later
+    });
+
+    return toUserResponse(user); //removes hashedPassword
+
+  } catch (err: unknown) {
+  if (
+    typeof err === 'object' &&
+    err !== null &&
+    'cause' in err
+  ) {
+    const cause = (err as any).cause; //drizzle specific, wraps pg error code in cause {}
+
+    if (cause?.code === '23505') { //pg error code for duplicate key
+      throw new ConflictError('Email already exists');
+    }
+  }
+
+  throw err;
+}
+
 }
 
 export async function deleteUserById(id: string) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
-  if (!id) throw new Error('ID required');
+  if (!id) throw new BadRequestError('ID required');
   
   const user = await userRepo.deleteUserById(id);
-  if (!user) throw new Error('User not found');
+  if (!user) throw new NotFoundError('User not found');
   
-  return user;
+  return toUserResponse(user);
 }
 
 
-// ⚠️ DEV ONLY: wipes users table and other cascade-delete tables
-export async function resetUsers() {
-  return userRepo.resetUsers();
+
+export async function resetUsers() { // ⚠️ DEV ONLY
+  await userRepo.resetUsers();
 }
 

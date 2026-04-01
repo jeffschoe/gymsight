@@ -1,4 +1,4 @@
-//db queries
+//uses.repo.ts
 import { asc, desc, eq, and } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { NewUser, users } from "../../db/schema/users.js";
@@ -15,17 +15,16 @@ export async function createUser(user: NewUser) {
 }
 
 export async function deleteUserById(id: string) {
-  const [result] = await db
+  const [deleted] = await db
     .delete(users)
     .where(eq(users.id, id))
     .returning();
-  return result;
+  return deleted ?? null; // null if user to delete was not found
 }
 
-// ⚠️ DEV ONLY: wipes users table and other cascade-delete tables
-export async function resetUsers() {
+
+export async function resetUsers() { // ⚠️ DEV ONLY
   await db.delete(users)
-  //return { success: true } //leaving out for now
 }
 
 
