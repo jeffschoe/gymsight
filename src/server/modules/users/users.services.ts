@@ -24,7 +24,7 @@ export async function createUser(input: CreateUserInput) {
     const user = await userRepo.createUser({
       ...rest,
       passwordHash,
-      role: 'public' // prevent endpoint from passing whatever role, will need prtoected endpoint later
+      role: 'public' // prevent endpoint from passing whatever role, will need protected endpoint later
     });
 
     return toUserResponse(user); //removes hashedPassword
@@ -68,8 +68,44 @@ export async function deleteUserById(id: string) {
 }
 
 
+// ⚠️ DEV ONLY, BELOW
 
-export async function resetUsers() { // ⚠️ DEV ONLY
+export async function createDev(input: CreateUserInput) {
+  //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
+  if (!input.email) throw new BadRequestError('Email required');
+  if (!input.password) throw new BadRequestError('Password required');
+  
+  const { password, role, ...rest } = input;
+
+  const passwordHash = await hashPassword(password);
+
+  try {
+    const user = await userRepo.createUser({
+      ...rest,
+      passwordHash,
+      role: 'dev' // forces to dev
+    });
+
+    return toUserResponse(user); //removes hashedPassword
+
+  } catch (err: unknown) {
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      'cause' in err
+    ) {
+      const cause = (err as any).cause; //drizzle specific, wraps pg error code in cause {}
+
+      if (cause?.code === '23505') { //pg error code for duplicate key
+        throw new ConflictError('Email already exists');
+      }
+    }
+
+    throw err;
+  }
+}
+
+export async function resetUsers() { 
   await userRepo.resetUsers();
 }
 
