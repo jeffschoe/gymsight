@@ -1,5 +1,5 @@
 //uses.repo.ts
-import { asc, desc, eq, and } from "drizzle-orm";
+import { asc, desc, eq, ne, and } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { NewUser, users } from "../../db/schema/users.js";
 
@@ -38,9 +38,12 @@ export async function deleteUserById(id: string) {
   return deleted ?? null; // null if user to delete was not found
 }
 
+// ⚠️ DEV ONLY, BELOW
 
-export async function resetUsers() { // ⚠️ DEV ONLY
-  await db.delete(users)
+export async function resetUsers() { 
+  await db
+  .delete(users)
+  .where(ne(users.role, "dev"))
 }
 
 
