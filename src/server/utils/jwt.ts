@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
-import type { JwtPayload } from "jsonwebtoken";
-import { UserNotAuthenticatedError } from "../errors/errors.js";
+import { config } from "../config/env.js";
 
-const TOKEN_ISSUER = "gymsight";
+
 
 
 export function signJwt(
@@ -15,7 +14,7 @@ export function signJwt(
   const expiresAt = issuedAt + expiresIn;
 
   const token = jwt.sign({
-    "iss": TOKEN_ISSUER,
+    "iss": config.jwt.issuer,
     "sub": userID, //subject of the token, the user
     "iat": issuedAt,
     "exp": expiresAt
@@ -28,27 +27,6 @@ export function signJwt(
 }
 
 
-type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
-
-
-export function validateJWT(tokenString: string, secret: string): string {
-
-  let decoded: payload;
-
-  try {
-    decoded = jwt.verify(tokenString,secret) as payload;
-  } catch {
-    throw new UserNotAuthenticatedError("Invalid token");
-  }
-
-  if (decoded.iss !== TOKEN_ISSUER) {
-    throw new UserNotAuthenticatedError("Invalid issuer");
-  }
-
-  if (typeof decoded.sub !== "string") {
-    throw new UserNotAuthenticatedError("No user ID in token");
-  }
-  
-  return decoded.sub; //userID
-
+export function getBearerToken(authHeader: string) {
+  return authHeader.split(' ')[1]; //get bearer token
 }
