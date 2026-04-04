@@ -7,6 +7,12 @@ export async function hashPassword(password: string) {
 }
 
 //eventually will need for auth/logging in
-export async function verifyPassword(hash: string, password: string) {
-  return argon2.verify(hash, password);
+export async function verifyPassword(password: string, hash: string) {
+  if (!password) return false; // Guard against empty/undefined password
+
+  try {
+    return argon2.verify(hash, password); // Catch argon2 errors
+  } catch {
+    return false;
+  }
 }

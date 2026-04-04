@@ -14,6 +14,8 @@ app.use(express.json()); // Built-in JSON body parsing middleware
 
 // set middleware  with app.use
 app.use(middlewareLogReponse); 
+//app.use(requireAuth);
+//app.use(requireRole);
 
 // set routes like app.get("/health, (req, res)")
 registerRoutes(app);
