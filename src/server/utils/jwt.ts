@@ -1,3 +1,4 @@
+//jwt.ts
 import jwt from "jsonwebtoken";
 import { config } from "../config/env.js";
 
@@ -6,6 +7,7 @@ import { config } from "../config/env.js";
 
 export function signJwt(
   userID: string, 
+  role: string,
   expiresIn: number, 
   secret: string
 ): string {
@@ -16,6 +18,7 @@ export function signJwt(
   const token = jwt.sign({
     "iss": config.jwt.issuer,
     "sub": userID, //subject of the token, the user
+    "role": role,
     "iat": issuedAt,
     "exp": expiresAt
   },

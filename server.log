@@ -1,0 +1,79 @@
+✅ Database connected
+Server is running at http://localhost:8080
+[OK] POST /admin/reset - Status: 200
+REQ BODY: {
+  email: 'jombiecomehere@fun.com',
+  password: 'oooohmy',
+  firstName: 'Hedonism',
+  lastName: 'Bot',
+  role: 'admin'
+}
+[OK] POST /admin/users - Status: 201
+[OK] POST /api/login - Status: 200
+JWT PAYLOAD: {
+  iss: 'gymsight',
+  sub: 'ae9b230d-6184-4f7e-ae1d-a6909d5fcfef',
+  role: 'admin',
+  iat: 1775405846,
+  exp: 1775409446
+}
+USER PAYLOAD: {
+  iss: 'gymsight',
+  sub: 'ae9b230d-6184-4f7e-ae1d-a6909d5fcfef',
+  role: 'admin',
+  iat: 1775405846,
+  exp: 1775409446
+}
+USER ROLE: admin
+REQUIRED ROLES: [ 'admin' ]
+[OK] GET /api/users - Status: 201
+REQ BODY: {
+  email: 'F0rceBeWithMe@xwing.com',
+  password: 'cyoul8tervader',
+  firstName: 'Luke',
+  lastName: 'Skywalker',
+  role: 'admin'
+}
+[OK] POST /api/users - Status: 201
+REQ BODY: {
+  email: 'heisenburg@hermanos.com',
+  password: 'darnitletscook',
+  firstName: 'Walter',
+  lastName: 'White',
+  role: 'manager'
+}
+[OK] POST /api/users - Status: 201
+REQ BODY: {
+  email: 'pjfry@planet-express.com',
+  password: 'iloveleela4ever',
+  firstName: 'Phillip',
+  lastName: 'Fry',
+  role: 'Technician'
+}
+[OK] POST /api/users - Status: 201
+REQ BODY: {
+  email: 'gandolf@thegray.com',
+  password: 'flyyouf00ls',
+  firstName: 'Gandalf',
+  lastName: 'Gray',
+  role: 'Public'
+}
+[OK] POST /api/users - Status: 201
+[OK] GET /admin/users - Status: 201
+JWT PAYLOAD: {
+  iss: 'gymsight',
+  sub: 'ae9b230d-6184-4f7e-ae1d-a6909d5fcfef',
+  role: 'admin',
+  iat: 1775405846,
+  exp: 1775409446
+}
+USER PAYLOAD: {
+  iss: 'gymsight',
+  sub: 'ae9b230d-6184-4f7e-ae1d-a6909d5fcfef',
+  role: 'admin',
+  iat: 1775405846,
+  exp: 1775409446
+}
+USER ROLE: admin
+REQUIRED ROLES: [ 'admin' ]
+[OK] GET /api/users - Status: 201

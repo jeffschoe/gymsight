@@ -51,6 +51,26 @@ export async function deleteUserById(
 
 // ⚠️ DEV ONLY, BELOW
 
+export async function createUserAsDev(
+  req: Request, 
+  res: Response, 
+  next: NextFunction
+) {
+  try {
+    if (config.api.platform !== "dev") { //not allowed to perform hard users table reset
+      console.log(`platform = ${config.api.platform}`)
+      return res.status(403).send("Forbidden");
+    }
+
+    console.log('REQ BODY:', req.body);
+
+    const user = await userService.createUserAsDev(req.body);
+    
+    res.status(201).json(user);
+  } catch (err) {
+    next(err); 
+  }
+};
 
 export async function getUsersAsDev(
   _req: Request, 

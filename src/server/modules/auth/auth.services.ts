@@ -1,3 +1,4 @@
+//auth.services.ts
 import { config } from "../../config/env.js";
 import { BadRequestError, UserNotAuthenticatedError } from "../../errors/errors.js";
 import { verifyPassword } from "../../utils/hash.js";
@@ -26,6 +27,7 @@ export async function login(
 
   const token = signJwt(
     user.id,
+    user.role,
     config.jwt.defaultDuration,
     config.jwt.secret
   )
