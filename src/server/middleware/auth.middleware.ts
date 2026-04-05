@@ -26,10 +26,12 @@ export function middlewareRequireAuth(
     const decoded = jwt.verify(token, config.jwt.secret) as payload;
 
     (req as any).user = decoded;
+    console.log('JWT PAYLOAD:', decoded);
 
     next();
 
   } catch {
+    console.log(`FAILED HERE middlewareReqAuth catch`)
     return res.status(401).json({ message: "Invalid token" })
   }
 

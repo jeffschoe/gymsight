@@ -70,6 +70,39 @@ export async function deleteUserById(id: string) {
 
 // ⚠️ DEV ONLY, BELOW
 
+export async function createUserAsDev(input: CreateUserInput) {
+  //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
+  if (!input.email) throw new BadRequestError('Email required');
+  if (!input.password) throw new BadRequestError('Password required');
+  
+  const { password, ...rest } = input;
+
+  const passwordHash = await hashPassword(password);
+
+  try {
+    const user = await userRepo.createUser({
+      ...rest,
+      passwordHash,
+      });
+
+    return toUserResponse(user); //removes hashedPassword
+
+  } catch (err: unknown) {
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      'cause' in err
+    ) {
+      const cause = (err as any).cause; //drizzle specific, wraps pg error code in cause {}
+
+      if (cause?.code === '23505') { //pg error code for duplicate key
+        throw new ConflictError('Email already exists');
+      }
+    }
+
+    throw err;
+  }
+}
 
 export async function resetUsers() { 
   await userRepo.resetUsers();
