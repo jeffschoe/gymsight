@@ -7,7 +7,6 @@ export const roleEnum = pgEnum("role", [
   "technician",
   "manager",
   "admin",
-  "dev"
 ])
 
 export type Role = typeof roleEnum.enumValues[number];

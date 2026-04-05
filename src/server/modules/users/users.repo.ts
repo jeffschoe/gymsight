@@ -43,7 +43,6 @@ export async function deleteUserById(id: string) {
 export async function resetUsers() { 
   await db
   .delete(users)
-  .where(ne(users.role, "dev"))
 }
 
 
