@@ -20,7 +20,7 @@ export async function createUser(
 };
 
 export async function getUsers(
-  req: Request, 
+  _req: Request, 
   res: Response, 
   next: NextFunction
 ) {
@@ -51,25 +51,25 @@ export async function deleteUserById(
 
 // ⚠️ DEV ONLY, BELOW
 
-export async function createDev(
-  req: Request, 
+
+export async function getUsersAsDev(
+  _req: Request, 
   res: Response, 
   next: NextFunction
 ) {
   try {
-    if (config.api.platform !== "dev") {
+    if (config.api.platform !== "dev") { //not allowed to perform hard users table reset
       console.log(`platform = ${config.api.platform}`)
       return res.status(403).send("Forbidden");
     }
 
-    console.log('REQ BODY:', req.body);
-    const user = await userService.createDev(req.body);
-    
-    res.status(201).json(user);
+    const users = await userService.getUsers();
+
+    res.status(201).json(users);
   } catch (err) {
-    next(err); //lets Express error middleware handle failures
+    next(err);
   }
-};
+}
 
 export async function resetUsers( 
   _req: Request, 

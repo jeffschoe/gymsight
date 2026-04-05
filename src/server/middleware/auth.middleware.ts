@@ -1,12 +1,11 @@
 // auth.middleware.ts
 import jwt from "jsonwebtoken";
-import { JwtPayload } from "jsonwebtoken";
 import { config } from "../config/env.js";
 import { Request, Response, NextFunction } from "express";
 import { getBearerToken } from "../utils/jwt.js";
+import { payload } from "../modules/auth/auth.types.js";
 
 
-type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 
 
 export function middlewareRequireAuth(
