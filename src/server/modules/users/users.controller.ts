@@ -2,7 +2,7 @@
 import * as userService from './users.services.js';
 import { Request, Response, NextFunction } from 'express';
 import { config } from "../../config/env.js";
-import { DeleteUserByIdParams } from './users.types.js';
+import { DeleteUserByIdParams, UpdateUserByIdParams } from './users.types.js';
 
 export async function createUser(
   req: Request, 
@@ -28,6 +28,26 @@ export async function getUsers(
     const users = await userService.getUsers();
 
     res.status(200).json(users);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getUserById(
+  req: Request<UpdateUserByIdParams>, 
+  res: Response, 
+  next: NextFunction
+) {
+  try {
+    console.log('REQ PARAMS:', req.params);
+    const requester = (req as any).user;
+
+    const user = await userService.getUserById(
+      req.params.id, 
+      requester
+    );
+
+    res.status(200).json(user);
   } catch (err) {
     next(err);
   }

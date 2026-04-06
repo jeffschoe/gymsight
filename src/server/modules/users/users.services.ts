@@ -58,6 +58,30 @@ export async function getUsers() {
   }
 }
 
+export async function getUserById(
+  id: string,
+  requester: JwtPayloadApp
+) {
+  try {
+
+    if (!id) throw new BadRequestError('ID required');
+
+    //permission to complete request
+    const isOwner = id === requester.sub;
+    const isPrivileged = requester.role === 'admin';
+    if (!isOwner && !isPrivileged) throw new UserForbiddenError;
+
+    
+    const user = await userRepo.getUserById(id);
+    if (!user) throw new NotFoundError('User not found');
+
+  
+    return toUserResponse(user);
+  } catch (err) {
+    throw err;
+  }
+}
+
 export async function deleteUserById(
   id: string,
   requester: JwtPayloadApp
@@ -66,12 +90,15 @@ export async function deleteUserById(
   if (!id) throw new BadRequestError('ID required');
 
   //permission to complete request
-  const user = await userRepo.getUserById(id);
-  if (!user) throw new NotFoundError('User not found');
-
   const isOwner = id === requester.sub;
   const isPrivileged = requester.role === 'admin';
   if (!isOwner && !isPrivileged) throw new UserForbiddenError;
+
+  //see if this db call can be removed? Think we can refactor out.
+  const user = await userRepo.getUserById(id);
+  if (!user) throw new NotFoundError('User not found');
+
+ 
   
   const deletedUser = await userRepo.deleteUserById(id);
   if (!deletedUser) throw new NotFoundError('User not found');

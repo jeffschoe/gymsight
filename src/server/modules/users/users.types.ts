@@ -14,6 +14,10 @@ export type CreateUserInput = {
 
 export type UserResponse = Omit<ExistingUser, "passwordHash">;
 
+export type UpdateUserByIdParams = {
+  id: string;
+};
+
 export type DeleteUserByIdParams = {
   id: string;
 };
