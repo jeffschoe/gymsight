@@ -27,7 +27,7 @@ export async function getUsers(
   try {
     const users = await userService.getUsers();
 
-    res.status(201).json(users);
+    res.status(200).json(users);
   } catch (err) {
     next(err);
   }
