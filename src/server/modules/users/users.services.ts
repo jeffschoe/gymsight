@@ -1,6 +1,6 @@
 //users.services.ts
 import { ExistingUser } from "../../db/schema/users.js";
-import { BadRequestError, ConflictError, NotFoundError } from "../../errors/errors.js";
+import { BadRequestError, ConflictError, NotFoundError, UserForbiddenError } from "../../errors/errors.js";
 import { hashPassword } from "../../utils/hash.js";
 import * as userRepo from './users.repo.js';
 import { CreateUserInput, UserResponse } from "./users.types.js";
@@ -57,14 +57,25 @@ export async function getUsers() {
   }
 }
 
-export async function deleteUserById(id: string) {
+export async function deleteUserById(
+  id: string,
+  requester: { sub: string, role: string }
+) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
   if (!id) throw new BadRequestError('ID required');
-  
-  const user = await userRepo.deleteUserById(id);
+
+  //permission to complete request
+  const user = await userRepo.getUserById(id);
   if (!user) throw new NotFoundError('User not found');
+
+  const isOwner = id === requester.sub;
+  const isPrivileged = requester.role === 'admin';
+  if (!isOwner && !isPrivileged) throw new UserForbiddenError;
   
-  return toUserResponse(user);
+  const deletedUser = await userRepo.deleteUserById(id);
+  if (!deletedUser) throw new NotFoundError('User not found');
+  
+  return toUserResponse(deletedUser);
 }
 
 

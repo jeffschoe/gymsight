@@ -40,8 +40,12 @@ export async function deleteUserById(
 ) {
   try {
     console.log('REQ PARAMS:', req.params);
+    const requester = (req as any).user;
 
-    const user = await userService.deleteUserById(req.params.id);
+    const user = await userService.deleteUserById(
+      req.params.id, 
+      requester
+    );
 
     res.status(200).json(user);
   } catch (err) {
