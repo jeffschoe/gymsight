@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { config } from "../config/env.js";
 import { Request, Response, NextFunction } from "express";
 import { getBearerToken } from "../utils/jwt.js";
-import { payload } from "../modules/auth/auth.types.js";
+import { JwtPayloadApp } from "../modules/auth/auth.types.js";
 
 
 
@@ -23,7 +23,7 @@ export function middlewareRequireAuth(
 
 
   try {
-    const decoded = jwt.verify(token, config.jwt.secret) as payload;
+    const decoded = jwt.verify(token, config.jwt.secret) as JwtPayloadApp;
 
     (req as any).user = decoded;
     console.log('JWT PAYLOAD:', decoded);

@@ -2,6 +2,7 @@
 import { ExistingUser } from "../../db/schema/users.js";
 import { BadRequestError, ConflictError, NotFoundError, UserForbiddenError } from "../../errors/errors.js";
 import { hashPassword } from "../../utils/hash.js";
+import { JwtPayloadApp } from "../auth/auth.types.js";
 import * as userRepo from './users.repo.js';
 import { CreateUserInput, UserResponse } from "./users.types.js";
 
@@ -59,7 +60,7 @@ export async function getUsers() {
 
 export async function deleteUserById(
   id: string,
-  requester: { sub: string, role: string }
+  requester: JwtPayloadApp
 ) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
   if (!id) throw new BadRequestError('ID required');

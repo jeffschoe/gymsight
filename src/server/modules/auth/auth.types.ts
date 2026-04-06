@@ -1,9 +1,17 @@
+//auth.types.ts
 import { JwtPayload } from "jsonwebtoken";
 import { UserResponse } from "../users/users.types.js";
 
 
 
-export type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
+
+export type JwtPayloadApp = {
+  iss: string;
+  sub: string;
+  role: string;
+  iat: number;
+  exp: number;
+};
 
 export type inputParameters = {
   email: string; 
