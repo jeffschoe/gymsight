@@ -1,5 +1,4 @@
 //auth.types.ts
-import { JwtPayload } from "jsonwebtoken";
 import { UserResponse } from "../users/users.types.js";
 
 
