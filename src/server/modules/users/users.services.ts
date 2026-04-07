@@ -4,7 +4,7 @@ import { BadRequestError, ConflictError, NotFoundError, UserForbiddenError } fro
 import { hashPassword } from "../../utils/hash.js";
 import { JwtPayloadApp } from "../auth/auth.types.js";
 import * as userRepo from './users.repo.js';
-import { CreateUserInput, UserResponse } from "./users.types.js";
+import { CreateUserInput, UpdateUserInput, UserResponse } from "./users.types.js";
 
 
 function toUserResponse(user: ExistingUser): UserResponse {
@@ -63,7 +63,6 @@ export async function getUserById(
   requester: JwtPayloadApp
 ) {
   try {
-
     if (!id) throw new BadRequestError('ID required');
 
     //permission to complete request
@@ -77,6 +76,42 @@ export async function getUserById(
 
   
     return toUserResponse(user);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function updateUserById(
+  id: string,
+  input: UpdateUserInput,
+  requester: JwtPayloadApp
+) {
+  try {
+    if (!id) throw new BadRequestError('ID required');
+
+    //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
+    if (!input.email) throw new BadRequestError('Email required');
+    if (!input.password) throw new BadRequestError('Password required');
+    
+    //permission to complete request
+    const isOwner = id === requester.sub;
+    const isPrivileged = requester.role === 'admin';
+    if (!isOwner && !isPrivileged) throw new UserForbiddenError;
+
+    const { password, role, ...rest } = input;
+
+    const passwordHash = await hashPassword(password);
+
+    const user = await userRepo.updateUserById({
+      id,
+      ...rest,
+      passwordHash,
+      //role: 'public' will NOT update the role. Has to be done by admin or dev
+    });
+
+    return toUserResponse(user); //removes hashedPassword
+
+
   } catch (err) {
     throw err;
   }

@@ -1,7 +1,7 @@
 //uses.repo.ts
 import { asc, desc, eq, ne, and } from "drizzle-orm";
 import { db } from "../../db/index.js";
-import { NewUser, users } from "../../db/schema/users.js";
+import { NewUser, UpdatedUser, users } from "../../db/schema/users.js";
 
 
 export async function createUser(user: NewUser) {
@@ -26,6 +26,20 @@ export async function getUserById(id: string) {
     .select()
     .from(users)
     .where(eq(users.id, id))
+    return result;
+}
+
+export async function updateUserById(user: UpdatedUser) {
+  const [result] = await db
+    .update(users)
+    .set({
+      email: user.email,
+      passwordHash: user.passwordHash,
+      firstName: user.firstName,
+      lastName: user.lastName
+    })
+    .where(eq(users.id, user.id))
+    .returning();
     return result;
 }
 

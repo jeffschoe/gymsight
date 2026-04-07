@@ -12,13 +12,17 @@ export type CreateUserInput = {
   role?: Role;
 };
 
-export type UserResponse = Omit<ExistingUser, "passwordHash">;
-
-export type UpdateUserByIdParams = {
-  id: string;
+export type UpdateUserInput = {
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  role?: Role;
 };
 
-export type DeleteUserByIdParams = {
+export type UserResponse = Omit<ExistingUser, "passwordHash">;
+
+export type UserByIdParams = {
   id: string;
 };
 

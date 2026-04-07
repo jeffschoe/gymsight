@@ -30,4 +30,11 @@ export const users = pgTable("users", {
 })
 
 export type NewUser = typeof users.$inferInsert;
+export type UpdatedUser = {
+  id: string,
+  email: string,
+  passwordHash: string;
+  firstName?: string;
+  lastName?: string;
+}
 export type ExistingUser = typeof users.$inferSelect;

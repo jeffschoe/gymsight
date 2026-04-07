@@ -11,7 +11,7 @@ export function registerUserRoutes(app: Express) {
   app.post('/api/users', userController.createUser);
   app.get('/api/users', middlewareRequireAuth, middlewareRequireRole('admin'), userController.getUsers);
   app.get('/api/users/:id', middlewareRequireAuth, userController.getUserById);
-  //app.put('/api/users/:id', middlewareRequireAuth, userController.updateUser);
+  app.put('/api/users/:id', middlewareRequireAuth, userController.updateUserById);
   app.delete('/api/users/:id', middlewareRequireAuth, userController.deleteUserById);
 
 
