@@ -2,6 +2,7 @@
 import { ExistingUser } from "../../db/schema/users.js";
 import { BadRequestError, ConflictError, NotFoundError, UserForbiddenError } from "../../errors/errors.js";
 import { hashPassword } from "../../utils/hash.js";
+import { checkPermission } from "../../utils/jwt.js";
 import { JwtPayloadApp } from "../auth/auth.types.js";
 import * as userRepo from './users.repo.js';
 import { CreateUserInput, UpdateUserInput, UserResponse } from "./users.types.js";
@@ -11,6 +12,7 @@ function toUserResponse(user: ExistingUser): UserResponse {
   const { passwordHash, ...rest } = user;
   return rest;
 } //could evnetually move to a users.mapper.ts if I have many more
+
 
 export async function createUser(input: CreateUserInput) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
@@ -53,6 +55,7 @@ export async function getUsers() {
 
     //return users;
     return users.map((user) => toUserResponse(user)); //maps each to remove hashed password
+ 
   } catch (err) {
     throw err;
   }
@@ -65,17 +68,13 @@ export async function getUserById(
   try {
     if (!id) throw new BadRequestError('ID required');
 
-    //permission to complete request
-    const isOwner = id === requester.sub;
-    const isPrivileged = requester.role === 'admin';
-    if (!isOwner && !isPrivileged) throw new UserForbiddenError;
-
+    checkPermission(id, requester.sub, requester.role, 'admin');
     
     const user = await userRepo.getUserById(id);
     if (!user) throw new NotFoundError('User not found');
 
-  
     return toUserResponse(user);
+  
   } catch (err) {
     throw err;
   }
@@ -93,10 +92,7 @@ export async function updateUserById(
     if (!input.email) throw new BadRequestError('Email required');
     if (!input.password) throw new BadRequestError('Password required');
     
-    //permission to complete request
-    const isOwner = id === requester.sub;
-    const isPrivileged = requester.role === 'admin';
-    if (!isOwner && !isPrivileged) throw new UserForbiddenError;
+    checkPermission(id, requester.sub, requester.role, 'admin');
 
     const { password, role, ...rest } = input;
 
@@ -111,7 +107,6 @@ export async function updateUserById(
 
     return toUserResponse(user); //removes hashedPassword
 
-
   } catch (err) {
     throw err;
   }
@@ -124,21 +119,16 @@ export async function deleteUserById(
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
   if (!id) throw new BadRequestError('ID required');
 
-  //permission to complete request
-  const isOwner = id === requester.sub;
-  const isPrivileged = requester.role === 'admin';
-  if (!isOwner && !isPrivileged) throw new UserForbiddenError;
+  checkPermission(id, requester.sub, requester.role, 'admin');
 
-  //see if this db call can be removed? Think we can refactor out.
-  const user = await userRepo.getUserById(id);
-  if (!user) throw new NotFoundError('User not found');
-
+  try {
+    const deletedUser = await userRepo.deleteUserById(id);
+    
+    return toUserResponse(deletedUser);
+  } catch(err) {
+    throw new NotFoundError('User not found');
+  }
  
-  
-  const deletedUser = await userRepo.deleteUserById(id);
-  if (!deletedUser) throw new NotFoundError('User not found');
-  
-  return toUserResponse(deletedUser);
 }
 
 

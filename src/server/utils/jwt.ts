@@ -1,6 +1,7 @@
 //jwt.ts
 import jwt from "jsonwebtoken";
 import { config } from "../config/env.js";
+import { UserForbiddenError } from "../errors/errors.js";
 
 
 
@@ -29,7 +30,17 @@ export function signJwt(
   return token;
 }
 
-
 export function getBearerToken(authHeader: string) {
   return authHeader.split(' ')[1]; //get bearer token
+}
+
+export async function checkPermission(
+  userId: string, 
+  requesterSub: string, 
+  requesterRole: string, 
+  roleToAllowPermission: string
+) {
+  const isOwner = userId === requesterSub;
+  const isPrivileged = requesterRole === roleToAllowPermission;
+  if (!isOwner && !isPrivileged) throw new UserForbiddenError;
 }

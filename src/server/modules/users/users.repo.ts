@@ -56,7 +56,7 @@ export async function deleteUserById(id: string) {
     .delete(users)
     .where(eq(users.id, id))
     .returning();
-  return deleted ?? null; // null if user to delete was not found
+  return deleted; // add null if user to delete was not found?
 }
 
 // ⚠️ DEV ONLY, BELOW
