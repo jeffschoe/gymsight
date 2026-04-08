@@ -6,5 +6,6 @@ import * as authController from './auth.controller.js'
 export function registerAuthRoutes(app: Express) {
 
   app.post('/api/login', authController.login);
+  app.post('/api/refresh')
 
 }

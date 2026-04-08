@@ -1,4 +1,4 @@
-import { pgTable, timestamp, uuid, text, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, uuid, text, varchar, pgEnum } from "drizzle-orm/pg-core";
 
 
 
@@ -14,11 +14,11 @@ export type Role = typeof roleEnum.enumValues[number];
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
 
-  email: text("email").unique().notNull(),
-  passwordHash: text("password_hash").notNull(),
+  email: varchar("email", { length: 256 }).unique().notNull(),
+  passwordHash: varchar("password_hash", { length: 256 }).notNull(),
 
-  firstName: text("first_name"), //allows null
-  lastName: text("last_name"),
+  firstName: varchar("first_name", { length: 256 }), //allows null
+  lastName: varchar("last_name", { length: 256 }),
 
   role: roleEnum("role").notNull().default("public"), // least-privileged role if none selected
   
