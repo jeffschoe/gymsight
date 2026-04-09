@@ -1,4 +1,4 @@
-// auth.middleware.ts
+//auth.middleware.ts
 import jwt from "jsonwebtoken";
 import { config } from "../config/env.js";
 import { Request, Response, NextFunction } from "express";
@@ -31,7 +31,6 @@ export function middlewareRequireAuth(
     next();
 
   } catch {
-    console.log(`FAILED HERE middlewareReqAuth catch`)
     return res.status(401).json({ message: "Invalid token" })
   }
 

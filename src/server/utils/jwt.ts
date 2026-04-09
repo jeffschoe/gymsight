@@ -1,5 +1,6 @@
 //jwt.ts
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { config } from "../config/env.js";
 import { UserForbiddenError } from "../errors/errors.js";
 
@@ -43,4 +44,8 @@ export async function checkPermission(
   const isOwner = userId === requesterSub;
   const isPrivileged = requesterRole === roleToAllowPermission;
   if (!isOwner && !isPrivileged) throw new UserForbiddenError;
+}
+
+export function makeRefreshToken() {
+  return crypto.randomBytes(32).toString('hex');
 }

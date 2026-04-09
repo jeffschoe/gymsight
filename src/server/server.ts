@@ -1,6 +1,8 @@
-// entrypoint (listen) ONLY
+//server.ts
+//entrypoint (listen) ONLY
 
 import { app } from "./app.js";
+
 import { config } from "./config/env.js";
 import { verifyDatabase } from "./db/startUp.js";
 

@@ -1,3 +1,4 @@
+//hash.ts
 import argon2 from 'argon2';
 
 

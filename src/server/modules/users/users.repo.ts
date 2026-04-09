@@ -1,5 +1,5 @@
 //uses.repo.ts
-import { asc, desc, eq, ne, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { NewUser, UpdatedUser, users } from "../../db/schema/users.js";
 

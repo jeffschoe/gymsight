@@ -1,3 +1,4 @@
+//index.ts
 import { Express } from "express";
 import { registerUserRoutes } from "../modules/users/users.routes.js";
 import { registerHealthRoutes } from "./health.routes.js";

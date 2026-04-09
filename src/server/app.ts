@@ -1,3 +1,4 @@
+//app.ts
 import express from "express";
 import { registerRoutes } from "./routes/index.js";
 import { middlewareLogReponse } from "./middleware/logging.middleware.js";

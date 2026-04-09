@@ -1,3 +1,4 @@
+//env.ts
 import "dotenv/config"; 
 import type { MigrationConfig } from "drizzle-orm/migrator";
 /*

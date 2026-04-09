@@ -1,3 +1,4 @@
+//hash.test.ts
 import { describe, it, expect, beforeAll } from "vitest";
 import { hashPassword, verifyPassword } from "./hash.js";
 

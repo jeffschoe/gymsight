@@ -19,5 +19,9 @@ export type inputParameters = {
 
 export type LoginResponse = UserResponse & {
   token: string;
-  //refreshToken: string;
+  refreshToken: string;
 }
+
+export type RefreshResponse = {
+  token: string;
+};

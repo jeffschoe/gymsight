@@ -1,5 +1,5 @@
 //refreshTokens.ts
-import { pgTable, timestamp, varchar, uuid, boolean } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, varchar, uuid } from "drizzle-orm/pg-core";
 import { users } from "./users.js";
 
 

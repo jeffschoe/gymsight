@@ -1,3 +1,4 @@
+//startUp.ts
 import { db } from "./index.js";
 
 

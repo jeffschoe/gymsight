@@ -2,9 +2,11 @@
 import { config } from "../../config/env.js";
 import { BadRequestError, UserNotAuthenticatedError } from "../../errors/errors.js";
 import { verifyPassword } from "../../utils/hash.js";
-import { signJwt } from "../../utils/jwt.js";
+import { makeRefreshToken, signJwt } from "../../utils/jwt.js";
 import * as userRepo from '../users/users.repo.js';
-import { inputParameters, LoginResponse } from "./auth.types.js";
+import * as authRepo from '../auth/auth.repo.js';
+import { inputParameters, JwtPayloadApp, LoginResponse, RefreshResponse } from "./auth.types.js";
+
 
 
 
@@ -32,6 +34,13 @@ export async function login(
     config.jwt.secret
   )
 
+  const refreshToken = makeRefreshToken();
+
+  const refreshTokenSaved = await authRepo.saveRefreshToken(user.id, refreshToken);
+  if (!refreshTokenSaved) {
+    throw new UserNotAuthenticatedError(`Could not save refresh token`);
+  }
+
   return {
     id: user.id,
     email: user.email,
@@ -40,8 +49,40 @@ export async function login(
     role: user.role,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
-    token
+    token,
+    refreshToken
   } satisfies LoginResponse;
 
+}
+
+
+export async function refresh(
+  refreshToken: string,
+) {
+  let payload: JwtPayloadApp;
+
+  try {
+    const user = await authRepo.userForRefreshToken(refreshToken);
+    if (!user) {
+      throw new UserNotAuthenticatedError("Invalid refresh token") //401
+    }
+
+    const newAccessToken = signJwt(
+      user.id,
+      user.role,
+      config.jwt.defaultDuration,
+      config.jwt.secret
+    )
+
+    return {
+      token: newAccessToken 
+    } satisfies RefreshResponse;
+
+  } catch (err) {
+
+  }
   
 }
+
+
+
