@@ -8,5 +8,6 @@ export function registerAuthRoutes(app: Express) {
 
   app.post('/api/login', authController.login);
   app.post('/api/refresh', authController.refresh);
+  app.post('/api/revoke', authController.revoke);
 
 }

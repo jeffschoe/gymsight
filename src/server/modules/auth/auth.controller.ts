@@ -40,3 +40,25 @@ export async function refresh(
     next(err);
   }
 }
+
+export async function revoke(
+  req: Request, 
+  res: Response, 
+  next: NextFunction
+) {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if(!authHeader?.startsWith('Bearer ')) { //"If authHeader is missing OR does not start with 'Bearer ', return 401.
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const refreshToken = getBearerToken(authHeader);
+
+    await authService.revoke(refreshToken);
+
+    return res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+}

@@ -59,7 +59,6 @@ export async function login(
 export async function refresh(
   refreshToken: string,
 ) {
-  let payload: JwtPayloadApp;
 
   try {
     const user = await authRepo.userForRefreshToken(refreshToken);
@@ -85,4 +84,17 @@ export async function refresh(
 }
 
 
+export async function revoke(
+  refreshToken: string,
+) {
 
+  try {
+    await authRepo.revokeRefreshToken(refreshToken);
+    
+    return;
+
+  } catch (err) {
+
+  }
+  
+}
