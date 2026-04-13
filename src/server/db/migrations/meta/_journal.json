@@ -50,6 +50,13 @@
       "when": 1775962581303,
       "tag": "0006_glamorous_robin_chapel",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1776048333650,
+      "tag": "0007_tranquil_slyde",
+      "breakpoints": true
     }
   ]
 }
