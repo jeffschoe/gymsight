@@ -35,15 +35,26 @@ export function getBearerToken(authHeader: string) {
   return authHeader.split(' ')[1]; //get bearer token
 }
 
-export async function checkPermission(
+export function checkPermission(
   userId: string, 
   requesterSub: string, 
   requesterRole: string, 
-  roleToAllowPermission: string
+  rolesToAllowPermission: string[]
 ) {
   const isOwner = userId === requesterSub;
-  const isPrivileged = requesterRole === roleToAllowPermission;
+  const isPrivileged = rolesToAllowPermission.includes(requesterRole);
   if (!isOwner && !isPrivileged) throw new UserForbiddenError;
+}
+
+export function checkRolePrivilege(
+  requesterRole: string, 
+  rolesToAllowPermission: string[]
+) {
+  console.log("**** 1")
+  const isPrivileged = rolesToAllowPermission.includes(requesterRole);
+  console.log("**** 2");
+  if (!isPrivileged) throw new UserForbiddenError;
+  console.log("**** 3")
 }
 
 export function makeRefreshToken() {

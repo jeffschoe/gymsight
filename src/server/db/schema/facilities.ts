@@ -1,4 +1,4 @@
-//wos.ts
+//facilities.ts
 import { pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { users } from "./users.js";
 
@@ -9,11 +9,10 @@ export const facilities = pgTable("facilities", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
 
   name: varchar("name", { length: 256 }).notNull(),
-  street_number: varchar("street_number", { length: 256 }).notNull(),
-  street_name: varchar("street_name", { length: 256 }).notNull(),
+  streetNumberAndName: varchar("street_number_and_name", { length: 256 }).notNull(),
   city: varchar("city", { length: 256 }).notNull(),
   state: varchar("state", { length: 256 }).notNull(),
-  zip_code: varchar("zip_code", { length: 256 }).notNull(),
+  zipCode: varchar("zip_code", { length: 256 }).notNull(),
   
    //***GOTTEN FROM JWT OF HTTP REQUEST */
   creator: uuid("creator")

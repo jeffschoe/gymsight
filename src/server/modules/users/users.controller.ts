@@ -39,8 +39,13 @@ export async function getUserById(
   next: NextFunction
 ) {
   try {
+    //console.log('REQ:', req);
     console.log('REQ PARAMS:', req.params);
     const requester = (req as any).user;
+    console.log('REQ PARAMS ID:', req.params.id);
+    
+    console.log('REQUESTER:', requester);
+    
 
     const user = await userService.getUserById(
       req.params.id, 

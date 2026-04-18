@@ -1,9 +1,13 @@
-//wos.ts
+//workOrders.ts
 import { pgTable, timestamp, uuid, pgEnum, text } from "drizzle-orm/pg-core";
 import { equipment } from "./equipment.js";
 import { users } from "./users.js";
 
-
+export const typeEnum = pgEnum("type", [
+  "pm",
+  "corrective",
+  "other",
+])
 
 export const priorityEnum = pgEnum("priority", [
   "emergency",
@@ -44,6 +48,9 @@ export const workOrders = pgTable("work_orders", {
 
   //passed in body
   description: text("description").notNull(),
+
+  //don't allow public to assign
+  type: typeEnum("type").notNull().default("corrective"), //default corrective
   //don't allow public to assign
   priority: priorityEnum("priority").notNull().default("low"), //default low
   //don't allow public to assign

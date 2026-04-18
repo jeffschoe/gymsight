@@ -68,8 +68,9 @@ export async function getUserById(
   try {
     if (!id) throw new BadRequestError('ID required');
 
-    checkPermission(id, requester.sub, requester.role, 'admin');
-    
+    console.log("***** 1")
+    checkPermission(id, requester.sub, requester.role, ['admin']);
+    console.log("***** 2")
     const user = await userRepo.getUserById(id);
     if (!user) throw new NotFoundError('User not found');
 
@@ -92,7 +93,7 @@ export async function updateUserById(
     if (!input.email) throw new BadRequestError('Email required');
     if (!input.password) throw new BadRequestError('Password required');
     
-    checkPermission(id, requester.sub, requester.role, 'admin');
+    checkPermission(id, requester.sub, requester.role, ['admin']);
 
     const { password, role, ...rest } = input;
 
@@ -119,7 +120,7 @@ export async function deleteUserById(
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
   if (!id) throw new BadRequestError('ID required');
 
-  checkPermission(id, requester.sub, requester.role, 'admin');
+  checkPermission(id, requester.sub, requester.role, ['admin']);
 
   try {
     const deletedUser = await userRepo.deleteUserById(id);

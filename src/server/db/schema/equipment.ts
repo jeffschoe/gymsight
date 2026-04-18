@@ -1,4 +1,4 @@
-//wos.ts
+//equipment.ts
 import { integer, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { facilities } from "./facilities.js";
 import { users } from "./users.js";
@@ -13,6 +13,7 @@ export const equipment = pgTable("equipment", {
   manufacturer: varchar("manufacturer", { length: 256 }), //allows null
   serialNumber: varchar("serial_number", { length: 256 }), //allows null
   vintage: integer("vintage"), //allows null
+  warrantyExpiration: timestamp("warranty_expiration"), //allows null
 
   //***GOTTEN FROM JWT OF HTTP REQUEST */
   creator: uuid("creator")
