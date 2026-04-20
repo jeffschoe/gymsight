@@ -5,7 +5,8 @@ import { hashPassword } from "../../utils/hash.js";
 import { checkPermission } from "../../utils/jwt.js";
 import { JwtPayloadApp } from "../auth/auth.types.js";
 import * as userRepo from './users.repo.js';
-import { CreateUserInput, UpdateUserInput, UserResponse } from "./users.types.js";
+import { CreateUserInput, UserResponse } from "./users.schema.js";
+import { /*CreateUserInput,*/ UpdateUserInput, /*UserResponse*/ } from "./users.types.js";
 
 
 function toUserResponse(user: ExistingUser): UserResponse {
@@ -16,10 +17,10 @@ function toUserResponse(user: ExistingUser): UserResponse {
 
 export async function createUser(input: CreateUserInput) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
-  if (!input.email) throw new BadRequestError('Email required');
-  if (!input.password) throw new BadRequestError('Password required');
+  //if (!input.email) throw new BadRequestError('Email required');
+  //if (!input.password) throw new BadRequestError('Password required');
   
-  const { password, role, ...rest } = input;
+  const { password, /*role,*/ ...rest } = input;
 
   const passwordHash = await hashPassword(password);
 
@@ -27,7 +28,7 @@ export async function createUser(input: CreateUserInput) {
     const user = await userRepo.createUser({
       ...rest,
       passwordHash,
-      role: 'public' // prevent endpoint from passing whatever role, will need protected endpoint later
+      role: 'public' // forces public role. Will need admin to assign role later
     });
 
     return toUserResponse(user); //removes hashedPassword

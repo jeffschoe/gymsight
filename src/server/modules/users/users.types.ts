@@ -3,7 +3,7 @@ import { ExistingUser, Role } from "../../db/schema/users.js";
 
 
 
-
+/*
 export type CreateUserInput = {
   email: string;
   password: string;
@@ -11,6 +11,7 @@ export type CreateUserInput = {
   lastName?: string;
   role?: Role;
 };
+*/
 
 export type UpdateUserInput = {
   email: string;
@@ -20,7 +21,7 @@ export type UpdateUserInput = {
   role?: Role;
 };
 
-export type UserResponse = Omit<ExistingUser, "passwordHash">;
+//export type UserResponse = Omit<ExistingUser, "passwordHash">;
 
 export type UserByIdParams = {
   id: string;

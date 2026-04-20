@@ -1,5 +1,8 @@
 //auth.types.ts
-import { UserResponse } from "../users/users.types.js";
+//import { UserResponse } from "../users/users.types.js";
+
+import { UserResponse } from "../users/users.schema.js";
+
 
 
 

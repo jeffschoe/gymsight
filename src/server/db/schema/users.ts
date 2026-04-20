@@ -18,10 +18,10 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 256 }).unique().notNull(),
   passwordHash: varchar("password_hash", { length: 256 }).notNull(),
 
-  firstName: varchar("first_name", { length: 256 }), //allows null
-  lastName: varchar("last_name", { length: 256 }),
+  firstName: varchar("first_name", { length: 256 }).notNull(),
+  lastName: varchar("last_name", { length: 256 }).notNull(),
 
-  role: roleEnum("role").notNull().default("public"), // least-privileged role if none selected
+  role: roleEnum("role").default("public").notNull(), // least-privileged role if none selected
   
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")

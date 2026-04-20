@@ -3,12 +3,27 @@ import * as userService from './users.services.js';
 import { Request, Response, NextFunction } from 'express';
 import { config } from "../../config/env.js";
 import { UserByIdParams } from './users.types.js';
+import { createUserSchema } from './users.schema.js';
 
 export async function createUser(
   req: Request, 
   res: Response, 
   next: NextFunction
 ) {
+
+  try {
+    const params = createUserSchema.parse(req.body)
+
+    const user = await userService.createUser(params);
+
+    res.status(201).json(user);
+
+  } catch (err) {
+    next(err);
+  }
+  
+
+  /*
   try {
     console.log('REQ BODY:', req.body);
     const user = await userService.createUser(req.body);
@@ -17,6 +32,8 @@ export async function createUser(
   } catch (err) {
     next(err); //lets Express error middleware handle failures
   }
+  */
+
 };
 
 export async function getUsers(
