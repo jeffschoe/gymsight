@@ -2,13 +2,13 @@ import { z } from 'zod';
 
 
 
-export const createUserSchema = z.object({
+export const createUserSchema = z.strictObject({
   email: z.email(),
   password: z.string().min(8),
   firstName: z.string(),
   lastName: z.string(),
-  //role: z.enum(roleEnum.enumValues) //pulled from schema definition
-}).strict();
+  //role: z.enum(roleEnum.enumValues) //pulled from schema definition since all roles will be 'public' by default until an admin elevate their role
+});
 
 export type CreateUserInput = z.infer<typeof createUserSchema>
 
