@@ -3,7 +3,7 @@ import * as userService from './users.services.js';
 import { Request, Response, NextFunction } from 'express';
 import { config } from "../../config/env.js";
 import { UserByIdParams } from './users.types.js';
-import { createUserSchema } from './users.schema.js';
+import { createUserSchema, getUsersSchema } from './users.schema.js';
 
 export async function createUser(
   req: Request, 
@@ -37,11 +37,13 @@ export async function createUser(
 };
 
 export async function getUsers(
-  _req: Request, 
+  req: Request, 
   res: Response, 
   next: NextFunction
 ) {
   try {
+    getUsersSchema.parse(req.body) //enforces strict body requirements of undefined or {}
+
     const users = await userService.getUsers();
 
     res.status(200).json(users);

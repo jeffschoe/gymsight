@@ -12,6 +12,15 @@ export const createUserSchema = z.strictObject({
 
 export type CreateUserInput = z.infer<typeof createUserSchema>
 
+
+export const getUsersSchema = z.union([
+  z.undefined(), // no body passed in at all
+  z.strictObject({}) // empty object passed in 
+]);
+
+export type GetUsersInput = z.infer<typeof getUsersSchema>
+
+
 //users.types.ts
 import { ExistingUser, Role, roleEnum } from "../../db/schema/users.js";
 
