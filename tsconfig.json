@@ -8,7 +8,8 @@
     "strict": true,
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true, //TypeScript doesn't know the array's length at compile time. It assumes destructured positions exist because forcing you to narrow every destructure would be miserable in practice. The tradeoff: a small class of runtime bugs slip through. With it on, const [result] = arr correctly types result as UserRow | undefined, and arr[0] is UserRow | undefined too. Highly recommended for new projects - it catches real bugs.
   },
   "include": ["./src/**/*.ts", "src/server/routes"],
   "exclude": ["node_modules"]

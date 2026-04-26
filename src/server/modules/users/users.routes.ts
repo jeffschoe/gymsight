@@ -8,10 +8,11 @@ import { middlewareRequireRole } from '../../middleware/rbac.middleware.js';
 
 export function registerUserRoutes(app: Express) {
 
-  app.post('/api/users', userController.createUser);
-  app.get('/api/users', middlewareRequireAuth, middlewareRequireRole('admin'), userController.getUsers);
+  app.post('/api/users', userController.createUser); //zodd done
+  app.get('/api/users', middlewareRequireAuth, middlewareRequireRole('admin'), userController.getUsers); //zodd done
   app.get('/api/users/:id', middlewareRequireAuth, userController.getUserById);
   app.put('/api/users/:id', middlewareRequireAuth, userController.updateUserById);
+  app.patch('/api/users/:id', middlewareRequireAuth, userController.patchUserById);
   app.delete('/api/users/:id', middlewareRequireAuth, userController.deleteUserById);
 
 

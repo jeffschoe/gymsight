@@ -24,26 +24,22 @@ export async function createFacility(
 
   let managerId: string | null = null;
 
-  try {
+  if (input.manager) { //if they passed a manager arg in
+    const managerUser = await getUserByEmail(input.manager);
+    if (!managerUser) throw new BadRequestError("Manager not found");
+    
+    managerId = managerUser.id;
+    if (!managerId) throw new BadRequestError("Manager not found")
 
-    if (input.manager) { //if they passed a manager arg in
-      const managerUser = await getUserByEmail(input.manager);
-      if (!managerUser) throw new BadRequestError("Manager not found");
-      
-      managerId = managerUser.id;
-      if (!managerId) throw new BadRequestError("Manager not found")
+    const facility = await facilityRepo.createFacility(
+      input,
+      requester.sub,
+      managerId,
+    );
 
-      const facility = await facilityRepo.createFacility(
-        input,
-        requester.sub,
-        managerId,
-      );
-
-      return facility; 
-      
-    }
-  } catch (err) {
-    throw err;
+    return facility; 
+    
   }
+ 
     
 }

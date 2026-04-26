@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ExistingUser, Role, roleEnum } from '../../db/schema/users.js';
 
 
 
@@ -13,27 +14,54 @@ export const createUserSchema = z.strictObject({
 export type CreateUserInput = z.infer<typeof createUserSchema>
 
 
-export const getUsersSchema = z.union([
-  z.undefined(), // no body passed in at all
-  z.strictObject({}) // empty object passed in 
-]);
 
-export type GetUsersInput = z.infer<typeof getUsersSchema>
+export const userIdParamSchema = z.object({
+  id: z.uuid(),
+});
+
+export type UserByIdInput = z.infer<typeof userIdParamSchema>
 
 
-//users.types.ts
-import { ExistingUser, Role, roleEnum } from "../../db/schema/users.js";
+export const updateUserSchema = z.strictObject({
+  email: z.email(),
+  password: z.string().min(8),
+  firstName: z.string(),
+  lastName: z.string(),
+  role: z.enum(roleEnum.enumValues)
+});
 
-export type UpdateUserInput = {
-  email: string;
-  password: string;
+export type UpdateUserInput = z.infer<typeof updateUserSchema>
+
+
+//use for patch route eventually
+export const patchUserSchema = updateUserSchema.partial();
+
+export type PatchUserInput = z.infer<typeof patchUserSchema>
+
+
+export type UpdateUserDbInput = {
+  id: string,
+  email: string,
+  passwordHash: string;
+  firstName: string;
+  lastName: string;
+  role: Role;
+}
+
+export type PatchUserDbInput = {
+  id: string,
+  email?: string,
+  passwordHash?: string;
   firstName?: string;
   lastName?: string;
   role?: Role;
-};
+}
 
-export type UserResponse = Omit<ExistingUser, "passwordHash">;
 
-export type UserByIdParams = {
-  id: string;
-};
+//DEV ONLY
+
+export const createUserSchemaAsDev = createUserSchema.extend({
+  role: z.enum(roleEnum.enumValues)
+});
+
+export type CreateUserInputAsDev = z.infer<typeof createUserSchemaAsDev>

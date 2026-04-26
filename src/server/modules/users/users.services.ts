@@ -1,12 +1,12 @@
 //users.services.ts
-import { ExistingUser } from "../../db/schema/users.js";
-import { BadRequestError, ConflictError, NotFoundError, UserForbiddenError } from "../../errors/errors.js";
+import { ExistingUser, UserResponse } from "../../db/schema/users.js";
+import { BadRequestError, mapDbError, NotFoundError } from "../../errors/errors.js";
 import { hashPassword } from "../../utils/hash.js";
 import { checkPermission } from "../../utils/jwt.js";
 import { JwtPayloadApp } from "../auth/auth.types.js";
 import * as userRepo from './users.repo.js';
-import { CreateUserInput, UserResponse } from "./users.schema.js";
-import { /*CreateUserInput,*/ UpdateUserInput, /*UserResponse*/ } from "./users.types.js";
+import { CreateUserInput, CreateUserInputAsDev, PatchUserInput, UpdateUserInput } from "./users.schema.js";
+
 
 
 function toUserResponse(user: ExistingUser): UserResponse {
@@ -17,11 +17,8 @@ function toUserResponse(user: ExistingUser): UserResponse {
 
 export async function createUser(input: CreateUserInput) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
-  //if (!input.email) throw new BadRequestError('Email required');
-  //if (!input.password) throw new BadRequestError('Password required');
-  
-  const { password, /*role,*/ ...rest } = input;
 
+  const { password, /*role,*/ ...rest } = input;
   const passwordHash = await hashPassword(password);
 
   try {
@@ -33,85 +30,75 @@ export async function createUser(input: CreateUserInput) {
 
     return toUserResponse(user); //removes hashedPassword
 
-  } catch (err: unknown) {
-    if (
-      typeof err === 'object' &&
-      err !== null &&
-      'cause' in err
-    ) {
-      const cause = (err as any).cause; //drizzle specific, wraps pg error code in cause {}
-
-      if (cause?.code === '23505') { //pg error code for duplicate key
-        throw new ConflictError('Email already exists');
-      }
-    }
-
-    throw err;
+  } catch (err) {
+    mapDbError(err);
   }
 }
 
 export async function getUsers() {
-  try {
-    const users = await userRepo.getUsers();
+  //no permission check needed, already gaurded by middleware
+  const users = await userRepo.getUsers();
 
-    //return users;
-    return users.map((user) => toUserResponse(user)); //maps each to remove hashed password
- 
-  } catch (err) {
-    throw err;
-  }
+  return users.map((user) => toUserResponse(user)); //maps each to remove hashed password
 }
 
 export async function getUserById(
   id: string,
   requester: JwtPayloadApp
 ) {
-  try {
-    if (!id) throw new BadRequestError('ID required');
-
-    console.log("***** 1")
-    checkPermission(id, requester.sub, requester.role, ['admin']);
-    console.log("***** 2")
-    const user = await userRepo.getUserById(id);
-    if (!user) throw new NotFoundError('User not found');
-
-    return toUserResponse(user);
+  checkPermission(id, requester.sub, requester.role, ['admin']);
   
-  } catch (err) {
-    throw err;
-  }
+  const user = await userRepo.getUserById(id);
+  if (!user) throw new NotFoundError('User not found');
+
+  return toUserResponse(user);
 }
 
 export async function updateUserById(
   id: string,
   input: UpdateUserInput,
   requester: JwtPayloadApp
+) {  
+  checkPermission(id, requester.sub, requester.role, ['admin']);
+
+  const { password, role, ...rest } = input;
+  const passwordHash = await hashPassword(password);
+  const user = await userRepo.updateUserById({
+    id,
+    ...rest,
+    passwordHash,
+    role,
+  });
+  if (!user) throw new NotFoundError('User not found');
+
+  return toUserResponse(user); //removes hashedPassword
+}
+
+export async function patchUserById(
+  id: string,
+  input: PatchUserInput,
+  requester: JwtPayloadApp
 ) {
-  try {
-    if (!id) throw new BadRequestError('ID required');
+  checkPermission(id, requester.sub, requester.role, ['admin']);
 
-    //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
-    if (!input.email) throw new BadRequestError('Email required');
-    if (!input.password) throw new BadRequestError('Password required');
-    
-    checkPermission(id, requester.sub, requester.role, ['admin']);
+  const { password, role, ...rest } = input;
+  const updates = {
+    ...rest,
+    ...(role !== undefined ? { role } : {}),
+    ...(password !== undefined ? { passwordHash: await hashPassword(password) } : {}),
+  };
 
-    const { password, role, ...rest } = input;
-
-    const passwordHash = await hashPassword(password);
-
-    const user = await userRepo.updateUserById({
-      id,
-      ...rest,
-      passwordHash,
-      //role: 'public' will NOT update the role. Has to be done by admin or dev
-    });
-
-    return toUserResponse(user); //removes hashedPassword
-
-  } catch (err) {
-    throw err;
+  if (Object.keys(updates).length === 0) {
+    throw new BadRequestError('No fields provided to update');
   }
+
+  const user = await userRepo.patchUserById({
+    id,
+    ...updates
+  });
+  if (!user) throw new NotFoundError('User not found');
+
+  return toUserResponse(user); //removes hashedPassword
 }
 
 export async function deleteUserById(
@@ -119,30 +106,20 @@ export async function deleteUserById(
   requester: JwtPayloadApp
 ) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
-  if (!id) throw new BadRequestError('ID required');
-
   checkPermission(id, requester.sub, requester.role, ['admin']);
 
-  try {
-    const deletedUser = await userRepo.deleteUserById(id);
-    
-    return toUserResponse(deletedUser);
-  } catch(err) {
-    throw new NotFoundError('User not found');
-  }
- 
+  const user = await userRepo.deleteUserById(id);
+  if (!user) throw new NotFoundError('User not found');
+  
+  return toUserResponse(user);
 }
 
 
 // ⚠️ DEV ONLY, BELOW
 
-export async function createUserAsDev(input: CreateUserInput) {
+export async function createUserAsDev(input: CreateUserInputAsDev) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
-  if (!input.email) throw new BadRequestError('Email required');
-  if (!input.password) throw new BadRequestError('Password required');
-  
   const { password, ...rest } = input;
-
   const passwordHash = await hashPassword(password);
 
   try {
@@ -153,20 +130,8 @@ export async function createUserAsDev(input: CreateUserInput) {
 
     return toUserResponse(user); //removes hashedPassword
 
-  } catch (err: unknown) {
-    if (
-      typeof err === 'object' &&
-      err !== null &&
-      'cause' in err
-    ) {
-      const cause = (err as any).cause; //drizzle specific, wraps pg error code in cause {}
-
-      if (cause?.code === '23505') { //pg error code for duplicate key
-        throw new ConflictError('Email already exists');
-      }
-    }
-
-    throw err;
+  } catch (err) {
+    mapDbError(err);
   }
 }
 

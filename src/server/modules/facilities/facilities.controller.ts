@@ -1,9 +1,7 @@
 //facilities.controller.ts
+import { getRequester } from '../../utils/getRequester.js';
 import * as facilityService from './facilities.services.js';
-import { Request, Response, NextFunction } from 'express';
-
-
-
+import { Request, Response } from 'express';
 
 
 
@@ -11,22 +9,18 @@ import { Request, Response, NextFunction } from 'express';
 export async function createFacility(
   req: Request, 
   res: Response, 
-  next: NextFunction
 ) {
 
-  try {
-    console.log('REQ BODY:', req.body);
-    const requester = (req as any).user;
-    console.log('REQ.params.id:', req.params.id);
-    console.log('requester:', requester);
+ 
+  console.log('REQ BODY:', req.body);
+  const requester = getRequester(req);
+  console.log('REQ.params.id:', req.params.id);
+  console.log('requester:', requester);
 
-    const facility = await facilityService.createFacility(
-      req.body,
-      requester
-    );
-    
-    res.status(201).json(facility);
-  } catch (err) {
-    next(err);
-  }
+  const facility = await facilityService.createFacility(
+    req.body,
+    requester
+  );
+  
+  res.status(201).json(facility);
 };

@@ -1,19 +1,19 @@
 //auth.types.ts
-//import { UserResponse } from "../users/users.types.js";
-
-import { UserResponse } from "../users/users.schema.js";
-
+import { z } from 'zod';
+import { roleEnum, UserResponse } from '../../db/schema/users.js';
 
 
 
+export const jwtPayloadAppSchema = z.object({
+  iss: z.string(),
+  sub: z.uuid(),
+  role: z.enum(roleEnum.enumValues),
+  iat: z.number(),
+  exp: z.number(),
+})
 
-export type JwtPayloadApp = {
-  iss: string;
-  sub: string;
-  role: string;
-  iat: number;
-  exp: number;
-};
+export type JwtPayloadApp = z.infer<typeof jwtPayloadAppSchema>;
+
 
 export type inputParameters = {
   email: string; 

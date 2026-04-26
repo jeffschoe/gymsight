@@ -6,7 +6,8 @@ import { Request, Response, NextFunction } from "express";
 export function middlewareLogReponse(
   req: Request,
   res: Response,
-  next: NextFunction) {
+  next: NextFunction
+) {
     res.on("finish", () => {
       const statusCode = res.statusCode;
 

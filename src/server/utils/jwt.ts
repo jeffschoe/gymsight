@@ -2,7 +2,7 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { config } from "../config/env.js";
-import { UserForbiddenError } from "../errors/errors.js";
+import { UserForbiddenError, UserNotAuthenticatedError } from "../errors/errors.js";
 
 
 
@@ -31,8 +31,16 @@ export function signJwt(
   return token;
 }
 
-export function getBearerToken(authHeader: string) {
-  return authHeader.split(' ')[1]; //get bearer token
+export function getBearerToken(authHeader: string): string {
+  const match = authHeader.match(/^Bearer\s+(.+)$/i); // allows 'bearer' and 'Bearer'
+  if (!match) {
+    throw new UserNotAuthenticatedError('Expected Bearer authorization scheme');
+  }
+  const token = match[1]!.trim();
+  if (!token) {
+    throw new UserNotAuthenticatedError('Missing bearer token');
+  }
+  return token;
 }
 
 export function checkPermission(
@@ -50,11 +58,8 @@ export function checkRolePrivilege(
   requesterRole: string, 
   rolesToAllowPermission: string[]
 ) {
-  console.log("**** 1")
   const isPrivileged = rolesToAllowPermission.includes(requesterRole);
-  console.log("**** 2");
   if (!isPrivileged) throw new UserForbiddenError;
-  console.log("**** 3")
 }
 
 export function makeRefreshToken() {

@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { config } from "../config/env.js";
 import { Request, Response, NextFunction } from "express";
 import { getBearerToken } from "../utils/jwt.js";
-import { JwtPayloadApp } from "../modules/auth/auth.types.js";
-
+import { jwtPayloadAppSchema } from "../modules/auth/auth.types.js";
+import { z } from 'zod';
 
 
 
@@ -23,16 +23,22 @@ export function middlewareRequireAuth(
 
 
   try {
-    const decoded = jwt.verify(token, config.jwt.secret) as JwtPayloadApp;
+    const raw = jwt.verify(token, config.jwt.secret)
+    const decoded = jwtPayloadAppSchema.parse(raw);
 
-    (req as any).user = decoded;
+    req.user = decoded;
     console.log('JWT PAYLOAD:', decoded);
 
     next();
 
-  } catch {
-    return res.status(401).json({ message: "Invalid token" })
+  } catch (err) {
+  if (err instanceof jwt.JsonWebTokenError) {
+    console.warn('JWT verification failed:', err.message);
+  } else if (err instanceof z.ZodError) {
+    console.warn('JWT payload shape invalid:', err.issues);
   }
+  return res.status(401).json({ message: 'Invalid token' });
+}
 
 
 }

@@ -5,8 +5,7 @@ import { verifyPassword } from "../../utils/hash.js";
 import { makeRefreshToken, signJwt } from "../../utils/jwt.js";
 import * as userRepo from '../users/users.repo.js';
 import * as authRepo from '../auth/auth.repo.js';
-import { inputParameters, JwtPayloadApp, LoginResponse, RefreshResponse } from "./auth.types.js";
-
+import { inputParameters, LoginResponse, RefreshResponse } from "./auth.types.js";
 
 
 
@@ -52,7 +51,6 @@ export async function login(
     token,
     refreshToken
   } satisfies LoginResponse;
-
 }
 
 
@@ -60,27 +58,21 @@ export async function refresh(
   refreshToken: string,
 ) {
 
-  try {
-    const user = await authRepo.userForRefreshToken(refreshToken);
-    if (!user) {
-      throw new UserNotAuthenticatedError("Invalid refresh token") //401
-    }
-
-    const newAccessToken = signJwt(
-      user.id,
-      user.role,
-      config.jwt.defaultDuration,
-      config.jwt.secret
-    )
-
-    return {
-      token: newAccessToken 
-    } satisfies RefreshResponse;
-
-  } catch (err) {
-
+  const user = await authRepo.userForRefreshToken(refreshToken);
+  if (!user) {
+    throw new UserNotAuthenticatedError("Invalid refresh token") //401
   }
-  
+
+  const newAccessToken = signJwt(
+    user.id,
+    user.role,
+    config.jwt.defaultDuration,
+    config.jwt.secret
+  )
+
+  return {
+    token: newAccessToken 
+  } satisfies RefreshResponse;
 }
 
 
@@ -88,13 +80,7 @@ export async function revoke(
   refreshToken: string,
 ) {
 
-  try {
-    await authRepo.revokeRefreshToken(refreshToken);
-    
-    return;
-
-  } catch (err) {
-
-  }
+  await authRepo.revokeRefreshToken(refreshToken);
   
+  return;
 }
