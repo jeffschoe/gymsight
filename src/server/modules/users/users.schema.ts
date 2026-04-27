@@ -33,29 +33,10 @@ export const updateUserSchema = z.strictObject({
 export type UpdateUserInput = z.infer<typeof updateUserSchema>
 
 
-//use for patch route eventually
 export const patchUserSchema = updateUserSchema.partial();
 
 export type PatchUserInput = z.infer<typeof patchUserSchema>
 
-
-export type UpdateUserDbInput = {
-  id: string,
-  email: string,
-  passwordHash: string;
-  firstName: string;
-  lastName: string;
-  role: Role;
-}
-
-export type PatchUserDbInput = {
-  id: string,
-  email?: string,
-  passwordHash?: string;
-  firstName?: string;
-  lastName?: string;
-  role?: Role;
-}
 
 
 //DEV ONLY

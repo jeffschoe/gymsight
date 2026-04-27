@@ -2,7 +2,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { NewUser, users } from "../../db/schema/users.js";
-import { PatchUserDbInput, UpdateUserDbInput } from "./users.schema.js";
+import { PatchUserDbInput, UpdateUserDbInput } from "./users.types.js";
 
 
 export async function createUser(user: NewUser) {
