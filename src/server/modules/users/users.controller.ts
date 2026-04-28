@@ -2,7 +2,7 @@
 import * as userService from './users.services.js';
 import { Request, Response } from 'express';
 import { config } from "../../config/env.js";
-import { createUserSchema, createUserSchemaAsDev, patchUserSchema, updateUserSchema, userIdParamSchema } from './users.schema.js';
+import { createUserSchema, createUserSchemaAsDev, patchUserSchema, updateUserSchema, userIdParamSchema } from './users.types.js';
 import { BadRequestError } from '../../errors/errors.js';
 import { getRequester } from '../../utils/getRequester.js';
 

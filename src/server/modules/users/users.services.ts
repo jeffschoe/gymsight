@@ -5,7 +5,7 @@ import { hashPassword } from "../../utils/hash.js";
 import { checkPermission } from "../../utils/jwt.js";
 import { JwtPayloadApp } from "../auth/auth.types.js";
 import * as userRepo from './users.repo.js';
-import { CreateUserInput, CreateUserInputAsDev, PatchUserInput, UpdateUserInput } from "./users.schema.js";
+import { CreateUserInput, CreateUserInputAsDev, PatchUserInput, UpdateUserInput } from './users.types.js';
 
 
 
