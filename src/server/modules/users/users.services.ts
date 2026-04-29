@@ -5,7 +5,7 @@ import { hashPassword } from "../../utils/hash.js";
 import { checkPermission } from "../../utils/jwt.js";
 import { JwtPayloadApp } from "../auth/auth.types.js";
 import * as userRepo from './users.repo.js';
-import { CreateUserInput, CreateUserInputAsDev, PatchUserInput, UpdateUserInput } from './users.types.js';
+import { CreateUserInput, CreateUserInputAsDev, PatchUserInput } from './users.types.js';
 
 
 
@@ -13,7 +13,6 @@ function toUserResponse(user: ExistingUser): UserResponse {
   const { passwordHash, ...rest } = user;
   return rest;
 } //could evnetually move to a users.mapper.ts if I have many more
-
 
 export async function createUser(input: CreateUserInput) {
   //console.log('SERVICE INPUT:', input); //DEBUG LOGGING
@@ -52,26 +51,6 @@ export async function getUserById(
   if (!user) throw new NotFoundError('User not found');
 
   return toUserResponse(user);
-}
-
-export async function updateUserById(
-  id: string,
-  input: UpdateUserInput,
-  requester: JwtPayloadApp
-) {  
-  checkPermission(id, requester.sub, requester.role, ['admin']);
-
-  const { password, role, ...rest } = input;
-  const passwordHash = await hashPassword(password);
-  const user = await userRepo.updateUserById({
-    id,
-    ...rest,
-    passwordHash,
-    role,
-  });
-  if (!user) throw new NotFoundError('User not found');
-
-  return toUserResponse(user); //removes hashedPassword
 }
 
 export async function patchUserById(

@@ -2,7 +2,7 @@
 import * as userService from './users.services.js';
 import { Request, Response } from 'express';
 import { config } from "../../config/env.js";
-import { createUserSchema, createUserSchemaAsDev, patchUserSchema, updateUserSchema, userIdParamSchema } from './users.types.js';
+import { createUserSchema, createUserSchemaAsDev, patchUserSchema, userIdParamSchema } from './users.types.js';
 import { BadRequestError } from '../../errors/errors.js';
 import { getRequester } from '../../utils/getRequester.js';
 
@@ -44,24 +44,6 @@ export async function getUserById(
   res.status(200).json(user);
 }
 
-export async function updateUserById(
-  req: Request,
-  res: Response,
-) {
-  //console.log('REQ PARAMS:', req.params);
-  const requester = getRequester(req);
-
-  const { id } = userIdParamSchema.parse(req.params);
-  const params = updateUserSchema.parse(req.body)
-  const user = await userService.updateUserById(
-    id, 
-    params,
-    requester
-  );
-
-  res.status(200).json(user);
-}
-
 export async function patchUserById(
   req: Request,
   res: Response,
@@ -85,7 +67,6 @@ export async function patchUserById(
 
   res.status(200).json(user);
 }
-
 
 export async function deleteUserById(
   req: Request, 

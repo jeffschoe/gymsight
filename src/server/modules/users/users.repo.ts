@@ -33,21 +33,6 @@ export async function getUserById(id: string) {
     return result;
 }
 
-export async function updateUserById(user: UpdateUserDbInput) {
-  const [result] = await db
-    .update(users)
-    .set({
-      email: user.email,
-      passwordHash: user.passwordHash,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role
-    })
-    .where(eq(users.id, user.id))
-    .returning();
-    return result;
-}
-
 export async function patchUserById(input: PatchUserDbInput) {
   const { id, ...updates } = input;
   
