@@ -5,26 +5,19 @@ import { verifyPassword } from "../../utils/hash.js";
 import { makeRefreshToken, signJwt } from "../../utils/jwt.js";
 import * as userRepo from '../users/users.repo.js';
 import * as authRepo from '../auth/auth.repo.js';
-import { inputParameters, LoginResponse, RefreshResponse } from "./auth.types.js";
+import { LoginInput, LoginResponse, RefreshResponse } from "./auth.types.js";
 
 
 
 
 export async function login(
-  input: inputParameters
+  input: LoginInput
 ) {
-  if (!input.email) throw new BadRequestError("Email is required");
-  if (!input.password) throw new BadRequestError("Password is required");
-
   const user = await userRepo.getUserByEmail(input.email);
-  if (!user) {
-    throw new UserNotAuthenticatedError('Invalid credentials');
-  }
+  if (!user) throw new UserNotAuthenticatedError('Invalid credentials');
 
   const valid = await verifyPassword(input.password, user.passwordHash);
-  if (!valid) {
-    throw new UserNotAuthenticatedError('Invalid credentials');
-  }
+  if (!valid) throw new UserNotAuthenticatedError('Invalid credentials');
 
   const token = signJwt(
     user.id,
@@ -36,9 +29,7 @@ export async function login(
   const refreshToken = makeRefreshToken();
 
   const refreshTokenSaved = await authRepo.saveRefreshToken(user.id, refreshToken);
-  if (!refreshTokenSaved) {
-    throw new UserNotAuthenticatedError(`Could not save refresh token`);
-  }
+  if (!refreshTokenSaved) throw new UserNotAuthenticatedError(`Could not save refresh token`);
 
   return {
     id: user.id,
@@ -59,9 +50,7 @@ export async function refresh(
 ) {
 
   const user = await authRepo.userForRefreshToken(refreshToken);
-  if (!user) {
-    throw new UserNotAuthenticatedError("Invalid refresh token") //401
-  }
+  if (!user) throw new UserNotAuthenticatedError("Invalid refresh token"); //401
 
   const newAccessToken = signJwt(
     user.id,

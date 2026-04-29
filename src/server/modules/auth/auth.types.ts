@@ -15,10 +15,13 @@ export const jwtPayloadAppSchema = z.object({
 export type JwtPayloadApp = z.infer<typeof jwtPayloadAppSchema>;
 
 
-export type inputParameters = {
-  email: string; 
-  password: string
-}
+export const loginSchema = z.strictObject({
+  email: z.email(),
+  password: z.string().min(1), // login allows any non-empty - don't enforce min(8) here like user creation, as rules may change over time
+})
+
+export type LoginInput = z.infer<typeof loginSchema>;
+
 
 export type LoginResponse = UserResponse & {
   token: string;

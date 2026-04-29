@@ -31,15 +31,22 @@ export function signJwt(
   return token;
 }
 
-export function getBearerToken(authHeader: string): string {
-  const match = authHeader.match(/^Bearer\s+(.+)$/i); // allows 'bearer' and 'Bearer'
+export function getBearerToken(authHeader: string | undefined): string {
+  if (!authHeader) {
+    throw new UserNotAuthenticatedError('Missing authorization header');
+  }
+  
+  const match = authHeader.match(/^Bearer\s+(\S+)\s*$/i); //Matches "Bearer <token>" case-insensitively. Token must be non-empty and contain no whitespace. Trailing whitespace is allowed and discarded.
   if (!match) {
     throw new UserNotAuthenticatedError('Expected Bearer authorization scheme');
   }
-  const token = match[1]!.trim();
+
+  const token = match[1]!;
+  // unreachable since \S+ requires at least one char, but keeping for safety
   if (!token) {
     throw new UserNotAuthenticatedError('Missing bearer token');
   }
+
   return token;
 }
 
